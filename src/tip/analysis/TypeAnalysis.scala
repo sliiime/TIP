@@ -136,7 +136,12 @@ class TypeAnalysis(program: AProgram)(implicit declData: DeclarationData) extend
       case alloc: AAlloc => unify(alloc, PointerType(alloc.exp))
       case ref: AVarRef => unify(ref, PointerType(ref.id))
       case _: ANull =>
-      case fun: AFunDeclaration => unify(fun, FunctionType(fun.params, fun.stmts.ret.exp))
+      case fun: AFunDeclaration =>
+        fun.stmts.ret.exp match  {
+          case _ : ANumber => unify(fun, FunctionType(fun.params, IntType()))
+          case retExp      => unify(fun, FunctionType(fun.params, retExp))
+        }
+        unify(fun, FunctionType(fun.params, fun.stmts.ret.exp))
       case call: ACallFuncExpr => unify(call.targetFun, FunctionType(call.args.map {
         case _: ANumber => IntType()
         case arg => VarType(arg)
