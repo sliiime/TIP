@@ -144,6 +144,7 @@ class TypeAnalysis(program: AProgram)(implicit declData: DeclarationData) extend
         unify(fun, FunctionType(fun.params, fun.stmts.ret.exp))
       case call: ACallFuncExpr => unify(call.targetFun, FunctionType(call.args.map {
         case _: ANumber => IntType()
+        case id: AIdentifier => VarType(declData(id))
         case arg => VarType(arg)
       }, call))
       case _: AReturnStmt =>
