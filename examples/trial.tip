@@ -1,0 +1,4 @@
+main() {
+ var a, b;
+ return 3;
+}
